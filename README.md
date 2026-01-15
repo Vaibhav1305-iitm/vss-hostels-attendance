@@ -38,4 +38,5 @@ A modern, mobile-first attendance tracking application for hostel management bui
 
 ## License
 
-© 2026 Vidyarthi Sahayyak Samiti, Pune. All rights reserved.
+
+
