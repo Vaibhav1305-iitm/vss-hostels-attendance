@@ -808,9 +808,22 @@
             const registerBtn = document.querySelector('.tab-btn:last-child');
             const registerForm = document.getElementById('registerForm');
             const tabSwitcher = document.getElementById('tabSwitcher');
+            const loginBtn = document.querySelector('.tab-btn:first-child');
 
-            if (registerBtn) registerBtn.style.display = 'flex';
+            // Reset login button width
+            if (loginBtn) loginBtn.style.flex = '';
+
+            // Show register button in tab switcher
+            if (registerBtn) registerBtn.style.display = '';
             if (tabSwitcher) tabSwitcher.style.display = 'flex';
+
+            // Make sure register form is visible (it was hidden)
+            if (registerForm) {
+                registerForm.style.display = '';
+                // Reset to step 1
+                document.getElementById('registerStep1').style.display = 'block';
+                document.getElementById('registerStep2').style.display = 'none';
+            }
 
             // Switch to register tab
             switchTab('register');
