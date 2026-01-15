@@ -207,6 +207,190 @@ function validatePassword(password) {
 }
 
 // ============================================
+// FORGOT PASSWORD - Send OTP
+// ============================================
+function sendForgotPasswordOTP(email) {
+  try {
+    if (!email) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: 'Email is required' 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const emailLower = email.toLowerCase().trim();
+    
+    // Check if email exists in database
+    const masterSS = SpreadsheetApp.openById(MASTER_USERS_SHEET_ID);
+    const usersSheet = masterSS.getSheetByName('USERS');
+    
+    if (!usersSheet) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: 'No registered users found' 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = usersSheet.getDataRange().getValues();
+    let emailExists = false;
+    let hostelName = '';
+    
+    // Column 5 is email (after adding city)
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][5] && String(data[i][5]).toLowerCase().trim() === emailLower) {
+        emailExists = true;
+        hostelName = data[i][1] || 'Your Hostel';
+        break;
+      }
+    }
+    
+    if (!emailExists) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: 'Email not registered. Please check or register first.' 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Generate and store OTP
+    const otp = generateOTP();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    
+    // Store in OTP_TEMP sheet
+    let otpSheet = masterSS.getSheetByName('OTP_TEMP');
+    if (!otpSheet) {
+      otpSheet = masterSS.insertSheet('OTP_TEMP');
+      otpSheet.appendRow(['email', 'otp', 'expires_at', 'type']);
+    }
+    
+    // Remove any existing OTP for this email
+    const otpData = otpSheet.getDataRange().getValues();
+    for (let i = otpData.length - 1; i >= 1; i--) {
+      if (otpData[i][0] && String(otpData[i][0]).toLowerCase() === emailLower) {
+        otpSheet.deleteRow(i + 1);
+      }
+    }
+    
+    // Store new OTP with type 'forgot'
+    otpSheet.appendRow([emailLower, otp, expiresAt.toISOString(), 'forgot']);
+    
+    // Send email
+    const subject = '🔐 Password Reset OTP - VSS Hostel Attendance';
+    const htmlBody = `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f5f7fa; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #003366 0%, #004a8f 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">🔐 Password Reset</h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0;">VSS Hostel Attendance System</p>
+        </div>
+        <div style="background: white; padding: 30px; border-radius: 0 0 12px 12px;">
+          <p style="color: #333; font-size: 16px;">You requested to reset your password for <strong>${hostelName}</strong>.</p>
+          <div style="background: linear-gradient(135deg, #FF9933 0%, #FFB366 100%); padding: 25px; border-radius: 12px; text-align: center; margin: 20px 0;">
+            <p style="color: white; margin: 0 0 10px; font-size: 14px;">Your OTP Code</p>
+            <h2 style="color: white; margin: 0; font-size: 36px; letter-spacing: 8px; font-weight: bold;">${otp}</h2>
+          </div>
+          <p style="color: #666; font-size: 14px;">⏰ This OTP expires in <strong>5 minutes</strong>.</p>
+          <p style="color: #999; font-size: 12px; margin-top: 20px;">If you didn't request this, please ignore this email.</p>
+        </div>
+      </div>
+    `;
+    
+    MailApp.sendEmail({
+      to: email,
+      subject: subject,
+      htmlBody: htmlBody
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      result: 'success',
+      message: 'OTP sent to your email'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      result: 'error', 
+      error: 'Failed to send OTP: ' + error.toString() 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ============================================
+// RESET PASSWORD - Verify OTP and Update
+// ============================================
+function resetPassword(email, otp, newPassword) {
+  try {
+    if (!email || !otp || !newPassword) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: 'All fields are required' 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const emailLower = email.toLowerCase().trim();
+    
+    // Validate password strength
+    const passwordCheck = validatePassword(newPassword);
+    if (!passwordCheck.valid) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: passwordCheck.error 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Verify OTP
+    const otpResult = verifyOTP(emailLower, otp);
+    if (!otpResult.valid) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: otpResult.error 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Update password in USERS sheet
+    const masterSS = SpreadsheetApp.openById(MASTER_USERS_SHEET_ID);
+    const usersSheet = masterSS.getSheetByName('USERS');
+    
+    if (!usersSheet) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: 'User database not found' 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = usersSheet.getDataRange().getValues();
+    let userRowIndex = -1;
+    
+    // Column 5 is email (after adding city)
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][5] && String(data[i][5]).toLowerCase().trim() === emailLower) {
+        userRowIndex = i + 1; // 1-indexed for sheet
+        break;
+      }
+    }
+    
+    if (userRowIndex === -1) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        result: 'error', 
+        error: 'User not found' 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Hash new password and update (column 7 is password_hash, 1-indexed = column G)
+    const newPasswordHash = hashPassword(newPassword);
+    usersSheet.getRange(userRowIndex, 7).setValue(newPasswordHash);
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      result: 'success',
+      message: 'Password reset successful! You can now login.'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      result: 'error', 
+      error: 'Password reset failed: ' + error.toString() 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ============================================
 // REGISTER NEW HOSTEL USER
 // ============================================
 function registerUser(data) {
@@ -477,6 +661,10 @@ function doPost(e) {
       return loginUser(json);
     } else if (json.action === "send_otp") {
       return sendOTP(json.email, json.hostelId, json.hostelName, json.rectorName);
+    } else if (json.action === "forgot_password_otp") {
+      return sendForgotPasswordOTP(json.email);
+    } else if (json.action === "reset_password") {
+      return resetPassword(json.email, json.otp, json.newPassword);
     }
     
     // ========== EXISTING ATTENDANCE ACTIONS ==========

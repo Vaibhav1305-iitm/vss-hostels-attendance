@@ -498,6 +498,98 @@
                     <span class="material-symbols-outlined">login</span>
                     Login to Dashboard
                 </button>
+
+                <!-- Forgot Password Link -->
+                <div style="text-align: center; margin-top: 16px;">
+                    <a href="#" onclick="showForgotPassword(); return false;"
+                        style="color: var(--vss-navy); font-size: 14px; text-decoration: none;">
+                        <span class="material-symbols-outlined"
+                            style="font-size: 16px; vertical-align: middle;">lock_reset</span>
+                        Forgot Password?
+                    </a>
+                </div>
+
+                <!-- Register Another Hostel Link -->
+                <div id="newRegistrationLink"
+                    style="text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; display: none;">
+                    <p style="color: var(--vss-text-secondary); font-size: 13px; margin-bottom: 8px;">Want to register
+                        another hostel?</p>
+                    <a href="#" onclick="enableNewRegistration(); return false;"
+                        style="color: var(--vss-saffron); font-weight: 600; font-size: 14px; text-decoration: none;">
+                        <span class="material-symbols-outlined"
+                            style="font-size: 16px; vertical-align: middle;">add_business</span>
+                        Register New Hostel
+                    </a>
+                </div>
+            </form>
+
+            <!-- Forgot Password Form -->
+            <form class="auth-form" id="forgotPasswordForm">
+                <!-- Step 1: Enter Email -->
+                <div id="forgotStep1">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <span class="material-symbols-outlined"
+                            style="font-size: 48px; color: var(--vss-navy);">lock_reset</span>
+                        <h3 style="color: var(--vss-navy); margin: 8px 0;">Reset Password</h3>
+                        <p style="color: var(--vss-text-secondary); font-size: 14px;">Enter your registered email to
+                            receive OTP</p>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Registered Email</label>
+                        <input type="email" class="input-field" id="forgotEmail" placeholder="Enter registered email"
+                            required>
+                    </div>
+                    <button type="button" class="submit-btn" id="forgotSendOtpBtn" onclick="handleForgotSendOTP()">
+                        <span class="material-symbols-outlined">mail</span>
+                        Send OTP
+                    </button>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="#" onclick="hideForgotPassword(); return false;"
+                            style="color: var(--vss-text-secondary); font-size: 14px;">
+                            ← Back to Login
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Step 2: Verify OTP & New Password -->
+                <div id="forgotStep2" style="display: none;">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <span class="material-symbols-outlined"
+                            style="font-size: 48px; color: var(--vss-success);">verified</span>
+                        <h3 style="color: var(--vss-navy); margin: 8px 0;">Verify & Reset</h3>
+                        <p style="color: var(--vss-text-secondary); font-size: 14px;">OTP sent to <span
+                                id="forgotEmailDisplay" style="font-weight: 600;"></span></p>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Enter OTP</label>
+                        <input type="text" class="input-field" id="forgotOTP" placeholder="6-digit OTP" maxlength="6"
+                            style="text-align: center; font-size: 24px; letter-spacing: 8px;" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">New Password</label>
+                        <input type="password" class="input-field" id="forgotNewPassword"
+                            placeholder="Min 8 chars, 1 upper, 1 lower, 1 num, 1 special" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Confirm New Password</label>
+                        <input type="password" class="input-field" id="forgotConfirmPassword"
+                            placeholder="Re-enter new password" required>
+                    </div>
+                    <button type="button" class="submit-btn" id="resetPasswordBtn" onclick="handleResetPassword()">
+                        <span class="material-symbols-outlined">lock_reset</span>
+                        Reset Password
+                    </button>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="#" onclick="forgotResendOTP(); return false;"
+                            style="color: var(--vss-saffron); font-size: 14px; margin-right: 20px;">
+                            Resend OTP
+                        </a>
+                        <a href="#" onclick="showForgotStep1(); return false;"
+                            style="color: var(--vss-text-secondary); font-size: 14px;">
+                            Change Email
+                        </a>
+                    </div>
+                </div>
             </form>
 
             <!-- Register Form -->
@@ -691,10 +783,11 @@
             return false;
         }
 
-        // Check if device has already registered
+        // Check if device has already registered - show "New Registration" link instead of hiding
         function checkDeviceRegistration() {
             const deviceRegistered = localStorage.getItem(SESSION_KEYS.DEVICE_REGISTERED);
             if (deviceRegistered === 'true') {
+                // Hide register tab but show "Register New Hostel" link in login form
                 const registerBtn = document.querySelector('.tab-btn:last-child');
                 const registerForm = document.getElementById('registerForm');
                 if (registerBtn) registerBtn.style.display = 'none';
@@ -702,7 +795,31 @@
 
                 const loginBtn = document.querySelector('.tab-btn:first-child');
                 if (loginBtn) loginBtn.style.flex = '1';
+
+                // Show "Register New Hostel" link
+                const newRegLink = document.getElementById('newRegistrationLink');
+                if (newRegLink) newRegLink.style.display = 'block';
             }
+        }
+
+        // Enable new registration (called when user clicks "Register New Hostel")
+        function enableNewRegistration() {
+            // Show register tab and form again
+            const registerBtn = document.querySelector('.tab-btn:last-child');
+            const registerForm = document.getElementById('registerForm');
+            const tabSwitcher = document.getElementById('tabSwitcher');
+
+            if (registerBtn) registerBtn.style.display = 'flex';
+            if (tabSwitcher) tabSwitcher.style.display = 'flex';
+
+            // Switch to register tab
+            switchTab('register');
+
+            // Hide the link
+            const newRegLink = document.getElementById('newRegistrationLink');
+            if (newRegLink) newRegLink.style.display = 'none';
+
+            showToast('Fill details to register new hostel', 'info');
         }
 
         function markDeviceRegistered() {
@@ -745,6 +862,10 @@
             const registerBtn = document.querySelector('.tab-btn:last-child');
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
+            const forgotForm = document.getElementById('forgotPasswordForm');
+
+            // Hide forgot password form
+            if (forgotForm) forgotForm.classList.remove('active');
 
             if (tab === 'login') {
                 loginBtn.classList.add('active');
@@ -771,6 +892,143 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+
+        // ============================================
+        // FORGOT PASSWORD HANDLERS
+        // ============================================
+        function showForgotPassword() {
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('forgotPasswordForm').classList.add('active');
+            document.getElementById('tabSwitcher').style.display = 'none';
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+        }
+
+        function hideForgotPassword() {
+            document.getElementById('forgotPasswordForm').classList.remove('active');
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('tabSwitcher').style.display = 'flex';
+            // Clear fields
+            document.getElementById('forgotEmail').value = '';
+            document.getElementById('forgotOTP').value = '';
+            document.getElementById('forgotNewPassword').value = '';
+            document.getElementById('forgotConfirmPassword').value = '';
+        }
+
+        function showForgotStep1() {
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('forgotOTP').value = '';
+        }
+
+        async function handleForgotSendOTP() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            const btn = document.getElementById('forgotSendOtpBtn');
+
+            if (!email) {
+                showToast('Please enter email', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Sending OTP...';
+
+            try {
+                const data = await fetchGAS({
+                    action: 'forgot_password_otp',
+                    email: email
+                });
+
+                if (data.result === 'success') {
+                    showToast('OTP sent to your email!', 'success');
+                    document.getElementById('forgotEmailDisplay').textContent = email;
+                    document.getElementById('forgotStep1').style.display = 'none';
+                    document.getElementById('forgotStep2').style.display = 'block';
+                } else {
+                    showToast(data.error || 'Failed to send OTP', 'error');
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">mail</span> Send OTP';
+
+            } catch (error) {
+                console.error('Forgot OTP error:', error);
+                showToast('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">mail</span> Send OTP';
+            }
+        }
+
+        async function forgotResendOTP() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            showToast('Resending OTP...', 'info');
+
+            try {
+                const data = await fetchGAS({
+                    action: 'forgot_password_otp',
+                    email: email
+                });
+
+                if (data.result === 'success') {
+                    showToast('New OTP sent!', 'success');
+                } else {
+                    showToast(data.error || 'Failed to resend OTP', 'error');
+                }
+            } catch (error) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        async function handleResetPassword() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            const otp = document.getElementById('forgotOTP').value.trim();
+            const newPassword = document.getElementById('forgotNewPassword').value;
+            const confirmPassword = document.getElementById('forgotConfirmPassword').value;
+            const btn = document.getElementById('resetPasswordBtn');
+
+            if (!otp || otp.length !== 6) {
+                showToast('Please enter 6-digit OTP', 'error');
+                return;
+            }
+
+            if (!newPassword || newPassword.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Resetting...';
+
+            try {
+                const data = await fetchGAS({
+                    action: 'reset_password',
+                    email: email,
+                    otp: otp,
+                    newPassword: newPassword
+                });
+
+                if (data.result === 'success') {
+                    showToast('Password reset successful!', 'success');
+                    hideForgotPassword();
+                } else {
+                    showToast(data.error || 'Failed to reset password', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-symbols-outlined">lock_reset</span> Reset Password';
+                }
+
+            } catch (error) {
+                console.error('Reset password error:', error);
+                showToast('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">lock_reset</span> Reset Password';
+            }
         }
 
         // ============================================
