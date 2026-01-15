@@ -1,6 +1,6 @@
-# VSS Hostel Attendance System
+# Hostel Attendance System
 
-**विद्यार्थी सहाय्यक समिती - Hostel Student Attendance Management System**
+** - Hostel Student Attendance Management System**
 
 A modern, mobile-first attendance tracking application for hostel management built for Vidyarthi Sahayyak Samiti (VSS), Pune.
 
@@ -37,6 +37,7 @@ A modern, mobile-first attendance tracking application for hostel management bui
 4. Copy the deployment URL to frontend
 
 ## License
+
 
 
 
