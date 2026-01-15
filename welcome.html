@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>विद्यार्थी सहाय्यक समिती - Attendance System</title>
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#003366">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <style>
+        :root {
+            /* VSS Brand Colors */
+            --vss-navy: #003366;
+            --vss-navy-dark: #002244;
+            --vss-navy-light: #004a8f;
+            --vss-saffron: #FF9933;
+            --vss-saffron-dark: #E68A2E;
+            --vss-white: #FFFFFF;
+            --vss-light-bg: #F5F7FA;
+            --vss-text: #1a1a2e;
+            --vss-text-secondary: #6c757d;
+            --vss-success: #28a745;
+            --vss-error: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, var(--vss-navy) 0%, var(--vss-navy-dark) 50%, #001a33 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--vss-white);
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .auth-header {
+            background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-light) 100%);
+            padding: 32px 24px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 153, 51, 0.1) 0%, transparent 60%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .auth-logo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            background: white;
+        }
+
+        .auth-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .auth-title {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-title-main {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .auth-subtitle .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--vss-saffron);
+        }
+
+        /* Tab Switcher */
+        .tab-switcher {
+            display: flex;
+            background: var(--vss-light-bg);
+            padding: 6px;
+            margin: 20px 20px 0;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--vss-text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .tab-btn.active {
+            background: var(--vss-white);
+            color: var(--vss-navy);
+            box-shadow: 0 2px 8px rgba(0, 51, 102, 0.15);
+        }
+
+        /* Forms */
+        .auth-form {
+            padding: 24px;
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--vss-text);
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e5eb;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: var(--vss-light-bg);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--vss-navy);
+            background: var(--vss-white);
+            box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: #adb5bd;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .submit-btn.login-btn {
+            background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-light) 100%);
+            color: white;
+        }
+
+        .submit-btn.register-btn {
+            background: linear-gradient(135deg, var(--vss-saffron) 0%, var(--vss-saffron-dark) 100%);
+            color: white;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .submit-btn .material-symbols-outlined {
+            font-size: 20px;
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Footer */
+        .auth-footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--vss-light-bg);
+            border-top: 1px solid #e1e5eb;
+        }
+
+        .auth-footer p {
+            font-size: 12px;
+            color: var(--vss-text-secondary);
+            margin: 0;
+        }
+
+        .auth-footer a {
+            color: var(--vss-navy);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Redirect Notice */
+        .redirect-notice {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 30px;
+            text-align: center;
+        }
+
+        .redirect-notice .material-symbols-outlined {
+            font-size: 64px;
+            color: var(--vss-success);
+            margin-bottom: 16px;
+        }
+
+        .redirect-notice h3 {
+            font-size: 20px;
+            color: var(--vss-text);
+            margin-bottom: 8px;
+        }
+
+        .redirect-notice p {
+            color: var(--vss-text-secondary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--vss-navy);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            background: var(--vss-success);
+        }
+
+        .toast.error {
+            background: var(--vss-error);
+        }
+
+        /* Helper Text */
+        .helper-text {
+            font-size: 11px;
+            color: var(--vss-text-secondary);
+            margin-top: 6px;
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .password-strength.weak {
+            color: #dc3545;
+        }
+
+        .password-strength.medium {
+            color: #ffc107;
+        }
+
+        .password-strength.strong {
+            color: #28a745;
+        }
+
+        /* Branding Footer */
+        .brand-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+        }
+
+        .brand-footer a {
+            color: var(--vss-saffron);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="width: 100%; max-width: 420px;">
+        <div class="auth-container">
+            <!-- Header -->
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="vss_logo.png" alt="VSS Logo">
+                </div>
+                <p class="auth-title">विद्यार्थी सहाय्यक समिती, पुणे</p>
+                <h1 class="auth-title-main">Hostel Attendance System</h1>
+                <p class="auth-subtitle">
+                    <span class="material-symbols-outlined">verified</span>
+                    Secure Multi-Hostel Management
+                </p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="tab-switcher" id="tabSwitcher">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label class="input-label">Email or Hostel ID</label>
+                    <input type="text" class="input-field" id="loginEmail" placeholder="Email or Hostel ID" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Password</label>
+                    <input type="password" class="input-field" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="submit-btn login-btn" id="loginBtn">
+                    <span class="material-symbols-outlined">login</span>
+                    Login to Dashboard
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                <!-- Step 1: Details -->
+                <div id="registerStep1">
+                    <div class="input-group">
+                        <label class="input-label">Hostel ID (from Office)</label>
+                        <input type="text" class="input-field" id="registerHostelId" placeholder="e.g., 11WIS000000g4j3"
+                            required>
+                        <p class="helper-text">Official Hostel ID assigned by main office</p>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Hostel Name</label>
+                        <input type="text" class="input-field" id="registerHostelName" placeholder="e.g., Boys Hostel A"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">City</label>
+                        <input type="text" class="input-field" id="registerCity"
+                            placeholder="e.g., Pune, Mumbai, Nashik" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Rector Name</label>
+                        <input type="text" class="input-field" id="registerRectorName"
+                            placeholder="Enter Rector's full name" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Mobile Number</label>
+                        <input type="tel" class="input-field" id="registerMobile" placeholder="10 digit number"
+                            pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Email Address</label>
+                        <input type="email" class="input-field" id="registerEmail" placeholder="rector@hostel.com"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Password</label>
+                        <input type="password" class="input-field" id="registerPassword"
+                            placeholder="Min 8 chars, 1 upper, 1 lower, 1 num, 1 special" required
+                            oninput="checkPasswordStrength()">
+                        <div id="passwordStrength" class="password-strength"></div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Students Sheet URL</label>
+                        <input type="url" class="input-field" id="registerStudentsSheetUrl"
+                            placeholder="https://docs.google.com/spreadsheets/d/..." required>
+                        <p class="helper-text">Google Sheet containing student list from main office</p>
+                    </div>
+                    <button type="button" class="submit-btn register-btn" id="sendOtpBtn" onclick="handleSendOTP()">
+                        <span class="material-symbols-outlined">mail</span>
+                        Send OTP to Email
+                    </button>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="registerStep2" style="display: none;">
+                    <!-- Header -->
+                    <div
+                        style="text-align: center; margin-bottom: 16px; background: linear-gradient(135deg, var(--vss-navy) 0%, #004a8f 100%); padding: 20px; border-radius: 12px; margin: -10px -10px 20px -10px;">
+                        <span class="material-symbols-outlined"
+                            style="font-size: 40px; color: var(--vss-saffron);">mark_email_read</span>
+                        <h3 style="color: white; margin: 8px 0 4px; font-size: 18px;">OTP Sent Successfully!</h3>
+                        <p id="otpSentTo" style="color: rgba(255,255,255,0.85); font-size: 13px; margin: 0;">Check your
+                            email inbox</p>
+                    </div>
+
+                    <!-- Registration Summary Card -->
+                    <div
+                        style="background: #f8f9fa; padding: 14px; border-radius: 10px; margin-bottom: 16px; border-left: 4px solid var(--vss-saffron);">
+                        <p style="margin: 0 0 10px; color: #666; font-size: 12px; font-weight: 600;">📋 REGISTRATION
+                            DETAILS</p>
+                        <div style="display: grid; gap: 8px; font-size: 13px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #888;">Rector:</span>
+                                <span id="otpSummaryRector" style="color: #333; font-weight: 500;">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #888;">Hostel ID:</span>
+                                <span id="otpSummaryHostelId" style="color: #333; font-weight: 500;">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #888;">Hostel:</span>
+                                <span id="otpSummaryHostelName" style="color: #333; font-weight: 500;">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #888;">Email:</span>
+                                <span id="otpSummaryEmail" style="color: var(--vss-navy); font-weight: 500;">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OTP Input -->
+                    <div class="input-group">
+                        <label class="input-label" style="text-align: center; display: block;">Enter 6-Digit OTP</label>
+                        <input type="text" class="input-field" id="registerOTP" placeholder="• • • • • •" maxlength="6"
+                            pattern="[0-9]{6}"
+                            style="text-align: center; font-size: 28px; letter-spacing: 12px; font-weight: 700; padding: 16px; background: linear-gradient(135deg, rgba(0,51,102,0.05) 0%, rgba(255,153,51,0.05) 100%);"
+                            required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <p class="helper-text" style="text-align: center;">⏱️ OTP valid for <strong>5 minutes</strong>
+                        </p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <button type="submit" class="submit-btn register-btn" id="registerBtn">
+                        <span class="material-symbols-outlined">verified</span>
+                        Verify & Complete Registration
+                    </button>
+                    <div style="display: flex; gap: 10px; margin-top: 12px;">
+                        <button type="button"
+                            style="flex: 1; padding: 12px; background: transparent; border: 1px solid var(--vss-navy); color: var(--vss-navy); border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 13px;"
+                            onclick="resendOTP()">
+                            🔄 Resend OTP
+                        </button>
+                        <button type="button"
+                            style="flex: 1; padding: 12px; background: transparent; border: 1px solid #dc3545; color: #dc3545; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 13px;"
+                            onclick="goBackToStep1()">
+                            ← Edit Details
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Redirect Notice -->
+            <div class="redirect-notice" id="redirectNotice">
+                <span class="material-symbols-outlined">check_circle</span>
+                <h3>Welcome Back!</h3>
+                <p>Redirecting to dashboard...</p>
+            </div>
+
+            <!-- Footer -->
+            <div class="auth-footer" id="authFooter">
+                <p>Powered by <a href="https://samiti.org/en/" target="_blank">Vidyarthi Sahayyak Samiti</a></p>
+            </div>
+        </div>
+
+        <div class="brand-footer">
+            <p>© 2026 VSS Hostel Management System</p>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyJPEjercwwzZDQJxdphKO2wiaD4nf_idvAiGnzwlC8YN4O6UOav2nR6humJGM_kJ1vbQ/exec';
+
+        // Helper function to call Google Apps Script (handles CORS)
+        async function fetchGAS(data) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                mode: 'cors',
+                redirect: 'follow',
+                body: JSON.stringify(data)
+            });
+            return response.json();
+        }
+
+        // ============================================
+        // SESSION MANAGEMENT
+        // ============================================
+        const SESSION_KEYS = {
+            HOSTEL_ID: 'messflow_hostel_id',
+            HOSTEL_NAME: 'messflow_hostel_name',
+            ATTENDANCE_SHEET_URL: 'messflow_attendance_sheet_url',
+            STUDENTS_SHEET_URL: 'messflow_students_sheet_url',
+            DEVICE_REGISTERED: 'messflow_device_registered',
+            RECTOR_NAME: 'messflow_rector_name',
+            EMAIL: 'messflow_email',
+            CITY: 'messflow_city'
+        };
+
+        // Check if already logged in
+        function checkSession() {
+            const attendanceUrl = localStorage.getItem(SESSION_KEYS.ATTENDANCE_SHEET_URL);
+            if (attendanceUrl) {
+                document.getElementById('tabSwitcher').style.display = 'none';
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('authFooter').style.display = 'none';
+                document.getElementById('redirectNotice').style.display = 'flex';
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                return true;
+            }
+            return false;
+        }
+
+        // Check if device has already registered
+        function checkDeviceRegistration() {
+            const deviceRegistered = localStorage.getItem(SESSION_KEYS.DEVICE_REGISTERED);
+            if (deviceRegistered === 'true') {
+                const registerBtn = document.querySelector('.tab-btn:last-child');
+                const registerForm = document.getElementById('registerForm');
+                if (registerBtn) registerBtn.style.display = 'none';
+                if (registerForm) registerForm.style.display = 'none';
+
+                const loginBtn = document.querySelector('.tab-btn:first-child');
+                if (loginBtn) loginBtn.style.flex = '1';
+            }
+        }
+
+        function markDeviceRegistered() {
+            localStorage.setItem(SESSION_KEYS.DEVICE_REGISTERED, 'true');
+        }
+
+        // Clear old session data
+        function clearOldSessionData() {
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (
+                    key.startsWith('hostel_students_cache_') ||
+                    key.startsWith('hostel_attendance_draft_') ||
+                    key.startsWith('hostel_sync_status_') ||
+                    key.startsWith('hostel_last_state_')
+                )) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+        }
+
+        function saveSession(hostelId, hostelName, attendanceSheetUrl, studentsSheetUrl, rectorName, email, city) {
+            clearOldSessionData();
+            localStorage.setItem(SESSION_KEYS.HOSTEL_ID, hostelId);
+            localStorage.setItem(SESSION_KEYS.HOSTEL_NAME, hostelName);
+            localStorage.setItem(SESSION_KEYS.ATTENDANCE_SHEET_URL, attendanceSheetUrl);
+            localStorage.setItem(SESSION_KEYS.STUDENTS_SHEET_URL, studentsSheetUrl);
+            if (rectorName) localStorage.setItem(SESSION_KEYS.RECTOR_NAME, rectorName);
+            if (email) localStorage.setItem(SESSION_KEYS.EMAIL, email);
+            if (city) localStorage.setItem(SESSION_KEYS.CITY, city);
+        }
+
+        // ============================================
+        // TAB SWITCHING
+        // ============================================
+        function switchTab(tab) {
+            const loginBtn = document.querySelector('.tab-btn:first-child');
+            const registerBtn = document.querySelector('.tab-btn:last-child');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (tab === 'login') {
+                loginBtn.classList.add('active');
+                registerBtn.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                registerBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+        }
+
+        // ============================================
+        // TOAST NOTIFICATIONS
+        // ============================================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================
+        // LOGIN HANDLER
+        // ============================================
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Logging in...';
+
+            try {
+                const data = await fetchGAS({
+                    action: 'login',
+                    email: email,
+                    password: password
+                });
+
+                if (data.result === 'success') {
+                    showToast('Login successful!', 'success');
+                    saveSession(data.hostelId, data.hostelName, data.attendanceSheetUrl, data.studentsSheetUrl, data.rectorName, data.email, data.city);
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    showToast(data.error || 'Login failed', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-symbols-outlined">login</span> Login to Dashboard';
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showToast('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">login</span> Login to Dashboard';
+            }
+        }
+
+        // ============================================
+        // PASSWORD STRENGTH CHECKER
+        // ============================================
+        function checkPasswordStrength() {
+            const password = document.getElementById('registerPassword').value;
+            const strengthDiv = document.getElementById('passwordStrength');
+
+            let strength = 0;
+            let messages = [];
+
+            if (password.length >= 8) strength++; else messages.push('8+ chars');
+            if (/[A-Z]/.test(password)) strength++; else messages.push('uppercase');
+            if (/[a-z]/.test(password)) strength++; else messages.push('lowercase');
+            if (/[0-9]/.test(password)) strength++; else messages.push('number');
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++; else messages.push('special char');
+
+            if (strength < 3) {
+                strengthDiv.className = 'password-strength weak';
+                strengthDiv.innerHTML = '⚠️ Weak - Need: ' + messages.join(', ');
+            } else if (strength < 5) {
+                strengthDiv.className = 'password-strength medium';
+                strengthDiv.innerHTML = '⚡ Medium - Need: ' + messages.join(', ');
+            } else {
+                strengthDiv.className = 'password-strength strong';
+                strengthDiv.innerHTML = '✅ Strong Password';
+            }
+        }
+
+        // ============================================
+        // SEND OTP HANDLER (Step 1)
+        // ============================================
+        async function handleSendOTP() {
+            const hostelId = document.getElementById('registerHostelId').value.trim();
+            const hostelName = document.getElementById('registerHostelName').value.trim();
+            const city = document.getElementById('registerCity').value.trim();
+            const rectorName = document.getElementById('registerRectorName').value.trim();
+            const mobile = document.getElementById('registerMobile').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const studentsSheetUrl = document.getElementById('registerStudentsSheetUrl').value.trim();
+            const btn = document.getElementById('sendOtpBtn');
+
+            // Validate all fields
+            if (!hostelId || !hostelName || !city || !rectorName || !mobile || !email || !password || !studentsSheetUrl) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+
+            // Validate mobile
+            if (!/^[0-9]{10}$/.test(mobile)) {
+                showToast('Mobile number must be 10 digits', 'error');
+                return;
+            }
+
+            // Validate password strength
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            if (password.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+                showToast('Password must have 8+ chars, uppercase, lowercase, number, and special character', 'error');
+                return;
+            }
+
+            // Validate sheet URL
+            if (!studentsSheetUrl.includes('docs.google.com/spreadsheets')) {
+                showToast('Invalid Students Sheet URL', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Sending OTP...';
+
+            try {
+                const data = await fetchGAS({
+                    action: 'send_otp',
+                    email: email,
+                    hostelId: hostelId,
+                    hostelName: hostelName,
+                    rectorName: rectorName
+                });
+
+                if (data.result === 'success') {
+                    showToast('OTP sent to your email!', 'success');
+                    document.getElementById('registerStep1').style.display = 'none';
+                    document.getElementById('registerStep2').style.display = 'block';
+                    document.getElementById('otpSentTo').textContent = 'Sent to: ' + email;
+
+                    // Populate summary card
+                    document.getElementById('otpSummaryRector').textContent = rectorName;
+                    document.getElementById('otpSummaryHostelId').textContent = hostelId;
+                    document.getElementById('otpSummaryHostelName').textContent = hostelName;
+                    document.getElementById('otpSummaryEmail').textContent = email;
+                } else {
+                    showToast(data.error || 'Failed to send OTP', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-symbols-outlined">mail</span> Send OTP to Email';
+                }
+
+            } catch (error) {
+                console.error('OTP error:', error);
+                showToast('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">mail</span> Send OTP to Email';
+            }
+        }
+
+        // ============================================
+        // RESEND OTP
+        // ============================================
+        async function resendOTP() {
+            const hostelId = document.getElementById('registerHostelId').value.trim();
+            const hostelName = document.getElementById('registerHostelName').value.trim();
+            const rectorName = document.getElementById('registerRectorName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            showToast('Sending new OTP...', 'info');
+
+            try {
+                const data = await fetchGAS({
+                    action: 'send_otp',
+                    email: email,
+                    hostelId: hostelId,
+                    hostelName: hostelName,
+                    rectorName: rectorName
+                });
+
+                if (data.result === 'success') {
+                    showToast('New OTP sent!', 'success');
+                } else {
+                    showToast(data.error || 'Failed to resend OTP', 'error');
+                }
+            } catch (error) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        // ============================================
+        // GO BACK TO STEP 1 (Edit Details)
+        // ============================================
+        function goBackToStep1() {
+            document.getElementById('registerStep2').style.display = 'none';
+            document.getElementById('registerStep1').style.display = 'block';
+            document.getElementById('sendOtpBtn').disabled = false;
+            document.getElementById('sendOtpBtn').innerHTML = '<span class="material-symbols-outlined">mail</span> Send OTP to Email';
+            document.getElementById('registerOTP').value = '';
+            showToast('Edit your details and send OTP again', 'info');
+        }
+
+        // ============================================
+        // REGISTER HANDLER (Step 2 - Verify & Register)
+        // ============================================
+        async function handleRegister(event) {
+            event.preventDefault();
+
+            const hostelId = document.getElementById('registerHostelId').value.trim();
+            const hostelName = document.getElementById('registerHostelName').value.trim();
+            const city = document.getElementById('registerCity').value.trim();
+            const rectorName = document.getElementById('registerRectorName').value.trim();
+            const mobileNumber = document.getElementById('registerMobile').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const studentsSheetUrl = document.getElementById('registerStudentsSheetUrl').value.trim();
+            const otp = document.getElementById('registerOTP').value.trim();
+            const btn = document.getElementById('registerBtn');
+
+            if (!otp || otp.length !== 6) {
+                showToast('Please enter 6-digit OTP', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Verifying...';
+
+            try {
+                const data = await fetchGAS({
+                    action: 'register',
+                    hostelId: hostelId,
+                    hostelName: hostelName,
+                    city: city,
+                    rectorName: rectorName,
+                    mobileNumber: mobileNumber,
+                    email: email,
+                    password: password,
+                    studentsSheetUrl: studentsSheetUrl,
+                    otp: otp
+                });
+
+                if (data.result === 'success') {
+                    showToast('Registration successful! Email verified.', 'success');
+                    markDeviceRegistered();
+                    saveSession(data.hostelId, data.hostelName, data.attendanceSheetUrl, data.studentsSheetUrl, rectorName, email, city);
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showToast(data.error || 'Registration failed', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-symbols-outlined">verified</span> Verify & Register';
+                }
+
+            } catch (error) {
+                console.error('Registration error:', error);
+                showToast('Network error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">verified</span> Verify & Register';
+            }
+        }
+
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!checkSession()) {
+                checkDeviceRegistration();
+            }
+        });
+    </script>
+</body>
+
+</html>
