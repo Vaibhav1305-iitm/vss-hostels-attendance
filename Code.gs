@@ -473,7 +473,7 @@ function registerUser(data) {
           error: 'Hostel ID already registered' 
         })).setMimeType(ContentService.MimeType.JSON);
       }
-      if (existingData[i][4] && existingData[i][4].toLowerCase() === email.toLowerCase()) {
+      if (existingData[i][5] && String(existingData[i][5]).toLowerCase() === email.toLowerCase()) {
         return ContentService.createTextOutput(JSON.stringify({ 
           result: 'error', 
           error: 'Email already registered' 
@@ -694,6 +694,21 @@ function doPost(e) {
     } else if (json.action === "check_attendance_status") {
       // Multi-device sync: Check if attendance already submitted
       return handleCheckAttendanceStatus(json.date, json.category, json.totalStudents, json.sheetUrl);
+    } else if (json.action === "get_data_statistics") {
+      // Data Management: Get statistics about all sheets
+      return getDataStatistics(json.sheetUrl);
+    } else if (json.action === "get_full_backup") {
+      // Data Management: Get all data from all sheets for backup
+      return getFullBackupData(json.sheetUrl);
+    } else if (json.action === "archive_old_data") {
+      // Data Management: Archive data older than X months
+      return archiveOldData(json.months, json.sheetUrl);
+    } else if (json.action === "purge_old_data") {
+      // Data Management: Permanently delete data older than X months
+      return purgeOldData(json.months, json.sheetUrl);
+    } else if (json.action === "import_backup") {
+      // Data Management: Import/restore from backup file
+      return importBackupData(json.sheets, json.mode, json.sheetUrl);
     }
     
     return ContentService.createTextOutput(JSON.stringify({ result: 'error', error: 'Unknown action' })).setMimeType(ContentService.MimeType.JSON);
@@ -2270,4 +2285,425 @@ function debugStudentKeys() {
   
   Logger.log('=== If KEYs are different, that is why duplicates occur! ===');
   return 'Check View → Logs for results';
+}
+
+// ============================================
+// DATA MANAGEMENT FUNCTIONS
+// For backup, archive, and data statistics
+// (Merged from VSS-Nagar parent app)
+// ============================================
+
+/**
+ * Get statistics about all sheets in the spreadsheet
+ * Shows row counts, date ranges, and estimated size
+ */
+function getDataStatistics(sheetUrl) {
+  try {
+    const ss = getSpreadsheet(sheetUrl);
+    const allSheets = ss.getSheets();
+    const stats = {
+      totalRows: 0,
+      totalCells: 0,
+      sheets: [],
+      lastUpdated: new Date().toISOString()
+    };
+    
+    // Sheets to analyze (attendance + tracking + students)
+    const relevantSheets = ['Yoga', 'Mess Day', 'Mess Night', 'Night Shift', 'Students', 'Tracking_Report', 'TrackingDetails'];
+    
+    allSheets.forEach(sheet => {
+      const name = sheet.getName();
+      const lastRow = sheet.getLastRow();
+      const lastCol = sheet.getLastColumn();
+      const cells = lastRow * lastCol;
+      
+      // Get date range for attendance sheets
+      let oldestDate = null;
+      let newestDate = null;
+      
+      if (['Yoga', 'Mess Day', 'Mess Night', 'Night Shift'].includes(name) && lastRow > 1) {
+        const data = sheet.getDataRange().getValues();
+        const headers = data[0].map(h => String(h).toLowerCase());
+        const dateIdx = headers.findIndex(h => h.includes('date'));
+        
+        if (dateIdx >= 0) {
+          const dates = [];
+          for (let i = 1; i < data.length; i++) {
+            const d = data[i][dateIdx];
+            if (d instanceof Date && !isNaN(d.getTime())) {
+              dates.push(d);
+            }
+          }
+          if (dates.length > 0) {
+            dates.sort((a, b) => a - b);
+            oldestDate = dates[0].toISOString().split('T')[0];
+            newestDate = dates[dates.length - 1].toISOString().split('T')[0];
+          }
+        }
+      }
+      
+      stats.sheets.push({
+        name: name,
+        rows: lastRow,
+        columns: lastCol,
+        cells: cells,
+        oldestDate: oldestDate,
+        newestDate: newestDate,
+        isRelevant: relevantSheets.includes(name) || name.startsWith('Archive_')
+      });
+      
+      stats.totalRows += lastRow;
+      stats.totalCells += cells;
+    });
+    
+    // Sort: relevant sheets first, then by row count
+    stats.sheets.sort((a, b) => {
+      if (a.isRelevant !== b.isRelevant) return b.isRelevant - a.isRelevant;
+      return b.rows - a.rows;
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      stats: stats
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Get ALL data from ALL sheets for full backup
+ * Returns data that can be used to restore everything
+ */
+function getFullBackupData(sheetUrl) {
+  try {
+    const ss = getSpreadsheet(sheetUrl);
+    const allSheets = ss.getSheets();
+    const backup = {
+      spreadsheetName: ss.getName(),
+      spreadsheetId: ss.getId(),
+      backupDate: new Date().toISOString(),
+      sheets: {}
+    };
+    
+    allSheets.forEach(sheet => {
+      const name = sheet.getName();
+      const lastRow = sheet.getLastRow();
+      const lastCol = sheet.getLastColumn();
+      
+      if (lastRow > 0 && lastCol > 0) {
+        const data = sheet.getDataRange().getValues();
+        
+        // Convert dates to ISO strings for JSON
+        const processedData = data.map(row => 
+          row.map(cell => {
+            if (cell instanceof Date) {
+              return { _type: 'date', value: cell.toISOString() };
+            }
+            return cell;
+          })
+        );
+        
+        backup.sheets[name] = {
+          rows: lastRow,
+          columns: lastCol,
+          data: processedData
+        };
+      }
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      backup: backup
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Archive data older than X months to separate archive sheets
+ * Moves data, doesn't delete - safe operation
+ */
+function archiveOldData(months, sheetUrl) {
+  try {
+    if (!months || months < 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        result: 'error',
+        error: 'Please specify months (minimum 1)'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const ss = getSpreadsheet(sheetUrl);
+    const attendanceSheets = ['Yoga', 'Mess Day', 'Mess Night', 'Night Shift'];
+    const cutoffDate = new Date();
+    cutoffDate.setMonth(cutoffDate.getMonth() - months);
+    const cutoffStr = cutoffDate.toISOString().split('T')[0];
+    
+    const results = { archived: 0, sheets: {} };
+    
+    attendanceSheets.forEach(sheetName => {
+      const sheet = ss.getSheetByName(sheetName);
+      if (!sheet || sheet.getLastRow() <= 1) return;
+      
+      const data = sheet.getDataRange().getValues();
+      const headers = data[0];
+      const headerRow = headers.map(h => String(h).toLowerCase());
+      const dateIdx = headerRow.findIndex(h => h.includes('date'));
+      
+      if (dateIdx === -1) return;
+      
+      // Separate old and new data
+      const oldData = [];
+      const newData = [headers]; // Keep headers
+      
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const dateVal = row[dateIdx];
+        let dateStr = '';
+        
+        if (dateVal instanceof Date) {
+          dateStr = dateVal.toISOString().split('T')[0];
+        } else if (dateVal) {
+          dateStr = String(dateVal).trim();
+        }
+        
+        if (dateStr && dateStr < cutoffStr) {
+          oldData.push(row);
+        } else {
+          newData.push(row);
+        }
+      }
+      
+      if (oldData.length === 0) return;
+      
+      // Create or get archive sheet
+      const archiveName = 'Archive_' + sheetName;
+      let archiveSheet = ss.getSheetByName(archiveName);
+      if (!archiveSheet) {
+        archiveSheet = ss.insertSheet(archiveName);
+        archiveSheet.appendRow(headers);
+      }
+      
+      // Append old data to archive
+      if (oldData.length > 0) {
+        archiveSheet.getRange(archiveSheet.getLastRow() + 1, 1, oldData.length, oldData[0].length).setValues(oldData);
+      }
+      
+      // Replace main sheet data with only new data
+      sheet.clearContents();
+      if (newData.length > 0) {
+        sheet.getRange(1, 1, newData.length, newData[0].length).setValues(newData);
+      }
+      
+      results.archived += oldData.length;
+      results.sheets[sheetName] = oldData.length;
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      message: `Archived ${results.archived} rows older than ${months} months`,
+      details: results
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Permanently delete data older than X months
+ * WARNING: This cannot be undone!
+ */
+function purgeOldData(months, sheetUrl) {
+  try {
+    if (!months || months < 6) {
+      return ContentService.createTextOutput(JSON.stringify({
+        result: 'error',
+        error: 'Minimum 6 months required for safety'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const ss = getSpreadsheet(sheetUrl);
+    const attendanceSheets = ['Yoga', 'Mess Day', 'Mess Night', 'Night Shift'];
+    const cutoffDate = new Date();
+    cutoffDate.setMonth(cutoffDate.getMonth() - months);
+    const cutoffStr = cutoffDate.toISOString().split('T')[0];
+    
+    const results = { deleted: 0, sheets: {} };
+    
+    attendanceSheets.forEach(sheetName => {
+      const sheet = ss.getSheetByName(sheetName);
+      if (!sheet || sheet.getLastRow() <= 1) return;
+      
+      const data = sheet.getDataRange().getValues();
+      const headers = data[0];
+      const headerRow = headers.map(h => String(h).toLowerCase());
+      const dateIdx = headerRow.findIndex(h => h.includes('date'));
+      
+      if (dateIdx === -1) return;
+      
+      // Keep only new data
+      const newData = [headers];
+      let deletedCount = 0;
+      
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const dateVal = row[dateIdx];
+        let dateStr = '';
+        
+        if (dateVal instanceof Date) {
+          dateStr = dateVal.toISOString().split('T')[0];
+        } else if (dateVal) {
+          dateStr = String(dateVal).trim();
+        }
+        
+        if (dateStr && dateStr < cutoffStr) {
+          deletedCount++;
+        } else {
+          newData.push(row);
+        }
+      }
+      
+      if (deletedCount === 0) return;
+      
+      // Replace sheet with only new data
+      sheet.clearContents();
+      if (newData.length > 0) {
+        sheet.getRange(1, 1, newData.length, newData[0].length).setValues(newData);
+      }
+      
+      results.deleted += deletedCount;
+      results.sheets[sheetName] = deletedCount;
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      message: `Permanently deleted ${results.deleted} rows older than ${months} months`,
+      details: results
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Import backup data from Excel file
+ * @param {Object} sheetsData - Object with sheet names as keys and 2D arrays as values
+ * @param {string} mode - 'merge' to append or 'replace' to clear and replace
+ */
+function importBackupData(sheetsData, mode, sheetUrl) {
+  try {
+    if (!sheetsData || Object.keys(sheetsData).length === 0) {
+      return ContentService.createTextOutput(JSON.stringify({
+        result: 'error',
+        error: 'No sheets data provided'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const ss = getSpreadsheet(sheetUrl);
+    const results = { imported: 0, sheets: {} };
+    
+    for (const [sheetName, data] of Object.entries(sheetsData)) {
+      if (!data || data.length === 0) continue;
+      
+      // Get or create sheet
+      let sheet = ss.getSheetByName(sheetName);
+      if (!sheet) {
+        sheet = ss.insertSheet(sheetName);
+      }
+      
+      // Process data - convert date strings and Excel serial numbers to dates
+      const processedData = data.map((row, rowIndex) => 
+        row.map((cell, colIndex) => {
+          // Skip header row (first row)
+          if (rowIndex === 0) return cell;
+          
+          // Check if this might be a date column (column index 8 is typically "Date" column I)
+          // Also check for columns that commonly contain dates
+          const isLikelyDateColumn = colIndex === 8 || colIndex === 9; // Date columns
+          
+          // Handle Excel serial numbers (numeric dates)
+          // Excel serial: days since 1899-12-30 (accounting for Excel's leap year bug)
+          if (typeof cell === 'number' && isLikelyDateColumn) {
+            // Check if it looks like an Excel serial date (between 1 and 100000)
+            if (cell > 1 && cell < 100000) {
+              // Convert Excel serial to JavaScript Date
+              // Excel epoch: 1899-12-30 (day 0), but need to subtract 1 due to Excel bug
+              const excelEpoch = new Date(1899, 11, 30); // Dec 30, 1899
+              const jsDate = new Date(excelEpoch.getTime() + (cell * 24 * 60 * 60 * 1000));
+              return jsDate;
+            }
+          }
+          
+          // Try to parse date strings (YYYY-MM-DD or ISO format)
+          if (typeof cell === 'string') {
+            // ISO date format
+            if (/^\d{4}-\d{2}-\d{2}T/.test(cell)) {
+              return new Date(cell);
+            }
+            // Simple date format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(cell)) {
+              const parts = cell.split('-');
+              return new Date(parts[0], parts[1] - 1, parts[2]);
+            }
+          }
+          return cell;
+        })
+      );
+      
+      if (mode === 'replace') {
+        // Clear existing content and write new data
+        sheet.clearContents();
+        if (processedData.length > 0 && processedData[0].length > 0) {
+          sheet.getRange(1, 1, processedData.length, processedData[0].length).setValues(processedData);
+        }
+        results.sheets[sheetName] = { rows: processedData.length, mode: 'replaced' };
+      } else {
+        // Merge mode - append data (skip header if sheet already has data)
+        const existingRows = sheet.getLastRow();
+        let dataToAppend = processedData;
+        
+        // Skip header row if sheet already has data (assuming first row is header)
+        if (existingRows > 0 && processedData.length > 1) {
+          dataToAppend = processedData.slice(1);
+        }
+        
+        if (dataToAppend.length > 0 && dataToAppend[0].length > 0) {
+          const startRow = existingRows > 0 ? existingRows + 1 : 1;
+          sheet.getRange(startRow, 1, dataToAppend.length, dataToAppend[0].length).setValues(dataToAppend);
+        }
+        results.sheets[sheetName] = { rows: dataToAppend.length, mode: 'merged' };
+      }
+      
+      results.imported += (results.sheets[sheetName]?.rows || 0);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      message: `Imported ${results.imported} rows across ${Object.keys(results.sheets).length} sheets`,
+      details: results
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
 }

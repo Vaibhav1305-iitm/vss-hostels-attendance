@@ -5,23 +5,36 @@
    ======================================== */
 
 :root {
-    /* iOS 17 Color Tokens – Light Mode */
-    --ios-blue: #007AFF;
+    /* ========================================
+       VSS (Vidyarthi Sahayyak Samiti) Brand Colors
+       Institutional Deep Blue + Saffron Orange
+       ======================================== */
+
+    /* VSS Primary Brand Colors */
+    --vss-navy: #004B8E;
+    --vss-navy-dark: #003366;
+    --vss-navy-light: #0066B3;
+    --vss-saffron: #FF9933;
+    --vss-saffron-dark: #E68A2E;
+    --vss-saffron-light: #FFB366;
+
+    /* iOS-style Color Tokens – Now with VSS Theme */
+    --ios-blue: #004B8E;
     --ios-green: #34C759;
-    --ios-orange: #FF9500;
+    --ios-orange: #FF9933;
     --ios-red: #FF3B30;
     --ios-purple: #AF52DE;
     --ios-teal: #5AC8FA;
-    --ios-indigo: #5856D6;
+    --ios-indigo: #003366;
 
-    /* Light Mode Surfaces - iOS System Gray 6 */
-    --ios-bg: #F2F2F7;
+    /* Light Mode Surfaces */
+    --ios-bg: #F5F7FA;
     --ios-card: #FFFFFF;
     --ios-card-alt: #FFFFFF;
     --ios-elevated: #FFFFFF;
 
     /* Light Mode Text */
-    --ios-text-primary: #000000;
+    --ios-text-primary: #1a1a2e;
     --ios-text-secondary: #3C3C43;
     --ios-text-tertiary: #8E8E93;
     --ios-text-quaternary: #C7C7CC;
@@ -29,20 +42,20 @@
     /* Light Mode Separators & Fills */
     --ios-separator: rgba(60, 60, 67, 0.12);
     --ios-separator-opaque: #C6C6C8;
-    --ios-fill: rgba(120, 120, 128, 0.12);
-    --ios-fill-secondary: rgba(120, 120, 128, 0.16);
-    --ios-fill-tertiary: rgba(118, 118, 128, 0.12);
+    --ios-fill: rgba(0, 75, 142, 0.08);
+    --ios-fill-secondary: rgba(0, 75, 142, 0.12);
+    --ios-fill-tertiary: rgba(0, 75, 142, 0.06);
 
-    /* iOS Diffuse Shadows */
-    --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --ios-shadow-md: 0 8px 30px rgba(0, 0, 0, 0.12);
-    --ios-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.15);
+    /* Soft Shadows with VSS tint */
+    --ios-shadow-sm: 0 2px 8px rgba(0, 75, 142, 0.08);
+    --ios-shadow-md: 0 8px 30px rgba(0, 75, 142, 0.12);
+    --ios-shadow-lg: 0 12px 40px rgba(0, 75, 142, 0.15);
     --ios-shadow-sheet: 0 -10px 50px rgba(0, 0, 0, 0.15);
 
     /* Typography – SF Pro with tight tracking */
-    --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
 
-    /* iOS Spacing (8pt grid) */
+    /* Spacing (8pt grid) */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
@@ -50,7 +63,7 @@
     --spacing-xl: 24px;
     --spacing-2xl: 32px;
 
-    /* iOS Large Radii - Premium Feel */
+    /* Large Radii - Premium Feel */
     --radius-sm: 10px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -61,9 +74,11 @@
     /* Mobile Constraints */
     --mobile-max-width: 430px;
 
-    /* Active Theme Colors */
-    --color-primary: var(--ios-blue);
-    --color-primary-light: rgba(0, 122, 255, 0.12);
+    /* Active Theme Colors - VSS */
+    --color-primary: var(--vss-navy);
+    --color-primary-light: rgba(0, 75, 142, 0.12);
+    --color-accent: var(--vss-saffron);
+    --color-accent-light: rgba(255, 153, 51, 0.12);
     --color-bg: var(--ios-bg);
     --color-card: var(--ios-card);
     --color-text: var(--ios-text-primary);
@@ -71,25 +86,26 @@
     --color-text-tertiary: var(--ios-text-tertiary);
     --color-separator: var(--ios-separator);
 
-    /* Material Design Light Theme Override */
-    --md-sys-color-primary: #007AFF;
+    /* Material Design Theme Override - VSS Colors */
+    --md-sys-color-primary: #004B8E;
     --md-sys-color-on-primary: #FFFFFF;
-    --md-sys-color-primary-container: rgba(0, 122, 255, 0.12);
-    --md-sys-color-on-primary-container: #007AFF;
-    --md-sys-color-secondary: #5856D6;
-    --md-sys-color-secondary-container: rgba(88, 86, 214, 0.12);
-    --md-sys-color-on-secondary-container: #5856D6;
-    --md-sys-color-background: #F2F2F7;
-    --md-sys-color-on-background: #000000;
+    --md-sys-color-primary-container: rgba(0, 75, 142, 0.12);
+    --md-sys-color-on-primary-container: #004B8E;
+    --md-sys-color-secondary: #FF9933;
+    --md-sys-color-secondary-container: rgba(255, 153, 51, 0.12);
+    --md-sys-color-on-secondary-container: #E68A2E;
+    --md-sys-color-tertiary: #FF9933;
+    --md-sys-color-background: #F5F7FA;
+    --md-sys-color-on-background: #1a1a2e;
     --md-sys-color-surface: #FFFFFF;
     --md-sys-color-surface-container: #FFFFFF;
     --md-sys-color-surface-container-high: #FFFFFF;
-    --md-sys-color-surface-container-low: #F2F2F7;
-    --md-sys-color-on-surface: #000000;
-    --md-sys-color-surface-variant: #F2F2F7;
+    --md-sys-color-surface-container-low: #F5F7FA;
+    --md-sys-color-on-surface: #1a1a2e;
+    --md-sys-color-surface-variant: #F5F7FA;
     --md-sys-color-on-surface-variant: #3C3C43;
-    --md-sys-color-outline: rgba(60, 60, 67, 0.2);
-    --md-sys-color-outline-variant: rgba(60, 60, 67, 0.12);
+    --md-sys-color-outline: rgba(0, 75, 142, 0.2);
+    --md-sys-color-outline-variant: rgba(0, 75, 142, 0.12);
 }
 
 /* Light Mode Only - No Dark Mode */
@@ -216,14 +232,14 @@ body {
     font-size: 20px;
 }
 
-/* iOS Profile Avatar - Circular with Gradient */
+/* Profile Avatar - Circular with VSS Gradient */
 .avatar {
     width: 28px;
     height: 28px;
     min-width: 28px;
     min-height: 28px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: #FFFFFF;
     display: flex;
     align-items: center;
@@ -260,13 +276,17 @@ body {
     box-shadow: var(--ios-shadow-md);
 }
 
-/* Stats Card – Hero Gradient */
+/* Stats Card – VSS Brand Gradient */
 .stats-card {
-    background: linear-gradient(145deg, var(--ios-blue), #5856D6);
-    color: #FFFFFF;
+    background: linear-gradient(145deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
+    color: #FFFFFF !important;
     padding: var(--spacing-xl);
     border-radius: var(--radius-xl);
-    box-shadow: 0 12px 40px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 75, 142, 0.35);
+}
+
+.stats-card * {
+    color: #FFFFFF !important;
 }
 
 .stats-card .stat-label {
@@ -340,7 +360,7 @@ body {
     min-height: 64px;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: linear-gradient(145deg, var(--ios-blue), var(--ios-indigo));
+    background: linear-gradient(145deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: #FFFFFF;
     display: flex;
     align-items: center;
@@ -382,7 +402,7 @@ body {
 
 .drawer-header .material-symbols-outlined {
     font-size: 28px;
-    color: var(--ios-blue);
+    color: var(--vss-navy);
 }
 
 /* Drawer List Items - 52px Height, Gray Pill Active State */
@@ -416,7 +436,7 @@ body {
 }
 
 .drawer-item.active .material-symbols-outlined {
-    color: var(--ios-blue);
+    color: var(--vss-navy);
     font-variation-settings: 'FILL' 1;
 }
 
@@ -523,6 +543,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
+    padding: 0 16px;
 }
 
 /* ========================================
@@ -626,14 +647,14 @@ body {
 }
 
 /* ========================================
-   iOS FAB
+   VSS FAB
    ======================================== */
 
 .fab {
     position: fixed;
     bottom: 100px;
     right: 20px;
-    background: linear-gradient(135deg, var(--ios-blue), #5856D6);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius-xl);
@@ -646,14 +667,14 @@ body {
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 75, 142, 0.35);
     z-index: 900;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fab:active {
     transform: scale(0.95);
-    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.25);
+    box-shadow: 0 4px 16px rgba(0, 75, 142, 0.25);
 }
 
 .fab-icon {
@@ -896,7 +917,7 @@ body {
 .btn-save-full {
     flex: 2;
     padding: 16px;
-    background: linear-gradient(135deg, var(--ios-blue), #5856D6);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius-md);
@@ -908,7 +929,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 75, 142, 0.25);
     transition: all 0.2s ease;
 }
 
@@ -1033,7 +1054,7 @@ body {
 .btn-filled {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, var(--ios-blue), #5856D6);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius-md);
@@ -1045,7 +1066,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 75, 142, 0.25);
     transition: all 0.2s ease;
 }
 
@@ -1329,7 +1350,7 @@ body {
 }
 
 .toast-info .material-symbols-outlined {
-    color: #007AFF;
+    color: #004B8E;
 }
 
 .toast .material-symbols-outlined {
@@ -1557,13 +1578,13 @@ body {
 .welcome-icon {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, var(--ios-blue) 0%, #5856D6 100%);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     border-radius: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto var(--spacing-lg) auto;
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 75, 142, 0.3);
 }
 
 .welcome-icon .material-symbols-outlined {
@@ -1594,7 +1615,7 @@ body {
 .btn-welcome-start {
     width: 100%;
     padding: 18px;
-    background: linear-gradient(135deg, var(--ios-blue) 0%, #5856D6 100%);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: white;
     border: none;
     border-radius: var(--radius-xl);
@@ -1606,7 +1627,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 75, 142, 0.3);
     transition: all 0.3s ease;
     margin-top: auto;
 }
@@ -1643,7 +1664,7 @@ select,
 select:focus,
 .form-select:focus {
     outline: none !important;
-    border-color: #007AFF !important;
+    border-color: #004B8E !important;
     box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2) !important;
 }
 
@@ -1666,13 +1687,13 @@ textarea {
 input:focus,
 textarea:focus {
     outline: none !important;
-    border-color: #007AFF !important;
+    border-color: #004B8E !important;
     box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2) !important;
 }
 
 /* Form Labels */
 label {
-    color: #007AFF !important;
+    color: #004B8E !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
@@ -1750,7 +1771,7 @@ label {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #007AFF, #5856D6);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: white;
     display: flex;
     align-items: center;

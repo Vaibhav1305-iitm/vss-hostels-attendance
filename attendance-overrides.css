@@ -49,7 +49,7 @@
     position: static;
     bottom: auto;
     right: auto;
-    background: linear-gradient(135deg, var(--ios-blue, #007AFF), #5856D6);
+    background: linear-gradient(135deg, var(--vss-navy, #004B8E) 0%, var(--vss-navy-dark, #003366) 100%);
     color: #FFFFFF;
     border: none;
     border-radius: 24px;
@@ -62,7 +62,7 @@
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 75, 142, 0.35);
     transition: all 0.2s ease;
 }
 
@@ -90,7 +90,7 @@
 /* FAB Secondary variant - for Section Sync */
 .fab.secondary {
     background: rgba(255, 255, 255, 0.95);
-    color: #007AFF;
+    color: #004B8E;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
 
@@ -203,9 +203,9 @@ body {
 }
 
 .date-range-pill.active {
-    background: var(--ios-blue, #007AFF);
+    background: var(--ios-blue, #004B8E);
     color: white;
-    border-color: var(--ios-blue, #007AFF);
+    border-color: var(--ios-blue, #004B8E);
 }
 
 /* ========================================
@@ -326,10 +326,10 @@ body {
    ======================================== */
 .student-list-container {
     background-color: var(--color-card);
-    border-radius: var(--radius-xl);
-    margin: 0 var(--spacing-md);
+    border-radius: 16px;
+    margin: 0 16px 20px 16px;
     overflow: hidden;
-    box-shadow: var(--ios-shadow-sm);
+    box-shadow: 0 2px 12px rgba(0, 75, 142, 0.08);
 }
 
 .student-card {
@@ -484,19 +484,19 @@ body {
 }
 
 .btn-sync.primary {
-    background: linear-gradient(135deg, var(--ios-blue), #5856D6);
+    background: linear-gradient(135deg, var(--vss-navy) 0%, var(--vss-navy-dark) 100%);
     color: white;
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 75, 142, 0.35);
 }
 
 .btn-sync.primary:active {
     transform: scale(0.97);
-    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.25);
+    box-shadow: 0 4px 16px rgba(0, 75, 142, 0.25);
 }
 
 .btn-sync.secondary {
     background: var(--ios-fill);
-    color: var(--ios-blue);
+    color: var(--vss-navy);
 }
 
 .btn-sync.secondary:active {
@@ -640,7 +640,7 @@ body {
 .admin-tab.active {
     background: var(--ios-blue);
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 75, 142, 0.3);
 }
 
 /* ========================================
@@ -679,7 +679,7 @@ body {
     background: var(--ios-blue);
     color: white;
     border-color: var(--ios-blue);
-    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 75, 142, 0.3);
 }
 
 /* ========================================
@@ -831,7 +831,7 @@ body {
 }
 
 .ios-toast.info .ios-toast-icon {
-    background-color: #007AFF;
+    background-color: #004B8E;
 }
 
 .ios-toast-icon .material-symbols-outlined {
@@ -897,8 +897,8 @@ body {
 .ios-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(0, 122, 255, 0.2);
-    border-top-color: var(--ios-blue, #007AFF);
+    border: 3px solid rgba(0, 75, 142, 0.2);
+    border-top-color: var(--ios-blue, #004B8E);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
@@ -1000,7 +1000,7 @@ body.hide-fab .fab {
    Admin Panel Styles
    ======================================== */
 .admin-header {
-    background: linear-gradient(135deg, var(--ios-blue, #007AFF), #5856D6);
+    background: linear-gradient(135deg, var(--ios-blue, #004B8E), #003366);
     padding: 20px;
     padding-top: calc(20px + env(safe-area-inset-top, 20px));
     color: white;
@@ -1053,9 +1053,9 @@ body.hide-fab .fab {
 }
 
 .admin-tab-new.active {
-    background: var(--ios-blue, #007AFF);
+    background: var(--ios-blue, #004B8E);
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 75, 142, 0.3);
 }
 
 .stats-cards-row {
@@ -1117,7 +1117,7 @@ body.hide-fab .fab {
 .search-pill:focus-within {
     background: rgba(255, 255, 255, 0.95) !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08),
-        inset 0 0 0 0.5px rgba(0, 122, 255, 0.2);
+        inset 0 0 0 0.5px rgba(0, 75, 142, 0.2);
     transform: scale(1.01);
 }
 
@@ -1125,8 +1125,8 @@ body.hide-fab .fab {
    Premium Stats Card - Hero Gradient
    ======================================== */
 .stats-card {
-    background: linear-gradient(145deg, #007AFF 0%, #5856D6 60%, #AF52DE 100%) !important;
-    box-shadow: 0 12px 40px rgba(0, 122, 255, 0.35),
+    background: linear-gradient(145deg, #004B8E 0%, #003366 60%, #AF52DE 100%) !important;
+    box-shadow: 0 12px 40px rgba(0, 75, 142, 0.35),
         0 4px 16px rgba(88, 86, 214, 0.2);
     border-radius: 24px !important;
     position: relative;
@@ -1157,8 +1157,8 @@ body.hide-fab .fab {
 }
 
 .ios-date-picker:focus-within {
-    background: rgba(0, 122, 255, 0.08) !important;
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+    background: rgba(0, 75, 142, 0.08) !important;
+    box-shadow: 0 0 0 3px rgba(0, 75, 142, 0.15);
 }
 
 .ios-date-input {
@@ -1242,7 +1242,7 @@ body.hide-fab .fab {
 
 /* Student avatar enhancement */
 .student-avatar {
-    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 75, 142, 0.2);
 }
 
 /* ========================================
@@ -1297,7 +1297,7 @@ body.hide-fab .fab {
 }
 
 .drawer-header {
-    background: linear-gradient(180deg, rgba(0, 122, 255, 0.08) 0%, transparent 100%);
+    background: linear-gradient(180deg, rgba(0, 75, 142, 0.08) 0%, transparent 100%);
     border-radius: 0 0 16px 16px;
     padding-bottom: 20px !important;
 }
@@ -1325,14 +1325,14 @@ body.hide-fab .fab {
    Premium FAB Buttons
    ======================================== */
 .fab {
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35),
+    box-shadow: 0 8px 24px rgba(0, 75, 142, 0.35),
         0 2px 8px rgba(0, 0, 0, 0.1) !important;
     transition: all 0.25s var(--ios-spring) !important;
 }
 
 .fab:active {
     transform: scale(0.92) !important;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(0, 75, 142, 0.25) !important;
 }
 
 .fab.secondary {
@@ -1378,9 +1378,9 @@ body.hide-fab .fab {
    Admin Panel Polish
    ======================================== */
 .admin-panel-header {
-    background: linear-gradient(145deg, #007AFF 0%, #5856D6 100%) !important;
+    background: linear-gradient(145deg, #004B8E 0%, #003366 100%) !important;
     border-radius: 20px !important;
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 75, 142, 0.3);
     margin-bottom: 16px !important;
 }
 
@@ -1393,7 +1393,7 @@ body.hide-fab .fab {
 }
 
 .admin-tab-new.active {
-    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 75, 142, 0.35);
     animation: tabPulse 0.3s var(--ios-spring-bounce);
 }
 
@@ -1504,7 +1504,7 @@ body.hide-fab .fab {
 }
 
 .ios-status-dot.info {
-    background: #007AFF;
+    background: #004B8E;
 }
 
 /* Card Title */
@@ -1590,7 +1590,7 @@ body.hide-fab .fab {
     align-items: flex-start;
     gap: 8px;
     padding: 12px;
-    background: rgba(0, 122, 255, 0.06);
+    background: rgba(0, 75, 142, 0.06);
     border-radius: 12px;
     margin-top: 4px;
 }
@@ -1601,7 +1601,7 @@ body.hide-fab .fab {
 
 .ios-insight-recommendation span:last-child {
     font-size: 13px;
-    color: #007AFF;
+    color: #004B8E;
     line-height: 1.4;
 }
 
@@ -1650,7 +1650,7 @@ body.hide-fab .fab {
 
 /* Summary Card */
 .ios-summary-card {
-    background: linear-gradient(135deg, rgba(0, 122, 255, 0.04) 0%, rgba(88, 86, 214, 0.04) 100%);
+    background: linear-gradient(135deg, rgba(0, 75, 142, 0.04) 0%, rgba(88, 86, 214, 0.04) 100%);
 }
 
 /* ========================================
@@ -1818,25 +1818,25 @@ button:active,
 
 /* Primary variant - Blue tinted glass (Sync All) */
 .ios-lockscreen-btn.primary {
-    background: rgba(0, 122, 255, 0.35);
-    border-color: rgba(0, 122, 255, 0.4);
+    background: rgba(0, 75, 142, 0.35);
+    border-color: rgba(0, 75, 142, 0.4);
     box-shadow:
-        0 4px 20px rgba(0, 122, 255, 0.3),
+        0 4px 20px rgba(0, 75, 142, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.3),
-        0 0 0 1px rgba(0, 122, 255, 0.1);
+        0 0 0 1px rgba(0, 75, 142, 0.1);
 }
 
 .ios-lockscreen-btn.primary:hover {
-    background: rgba(0, 122, 255, 0.45);
+    background: rgba(0, 75, 142, 0.45);
     box-shadow:
-        0 6px 28px rgba(0, 122, 255, 0.4),
+        0 6px 28px rgba(0, 75, 142, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        0 0 24px rgba(0, 122, 255, 0.2);
+        0 0 24px rgba(0, 75, 142, 0.2);
 }
 
 .ios-lockscreen-btn.primary:active {
     transform: scale(0.88);
-    background: rgba(0, 122, 255, 0.6);
+    background: rgba(0, 75, 142, 0.6);
 }
 
 /* Container positioning update for lock screen style */
@@ -1926,7 +1926,7 @@ button:active,
 }
 
 .ios-app-icon.blue {
-    background: linear-gradient(145deg, #007AFF, #5856D6);
+    background: linear-gradient(145deg, #004B8E, #003366);
 }
 
 /* Dock Label - Small text below icon */
@@ -2008,7 +2008,7 @@ button:active,
 /* Icon - Monochrome subtle blue */
 .ios-control-icon {
     font-size: 28px;
-    color: #007AFF;
+    color: #004B8E;
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
@@ -2082,7 +2082,7 @@ button:active,
 /* Icon - Monochrome blue */
 .ios-dock-item .material-symbols-outlined {
     font-size: 24px;
-    color: #007AFF;
+    color: #004B8E;
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
@@ -2243,7 +2243,7 @@ button:active,
 
 .assistive-menu-item:active {
     transform: scale(0.95);
-    background: rgba(0, 122, 255, 0.12);
+    background: rgba(0, 75, 142, 0.12);
 }
 
 /* Menu Icon */
@@ -2251,11 +2251,11 @@ button:active,
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(145deg, #007AFF 0%, #5856D6 100%);
+    background: linear-gradient(145deg, #004B8E 0%, #003366 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 75, 142, 0.3);
 }
 
 .assistive-menu-icon .material-symbols-outlined {
@@ -2275,13 +2275,13 @@ button:active,
 }
 
 .assistive-menu-item[data-category="Mess Night"] .assistive-menu-icon {
-    background: linear-gradient(145deg, #5856D6 0%, #AF52DE 100%);
+    background: linear-gradient(145deg, #003366 0%, #AF52DE 100%);
     box-shadow: 0 2px 8px rgba(88, 86, 214, 0.3);
 }
 
 .assistive-menu-item[data-category="Night Shift"] .assistive-menu-icon {
-    background: linear-gradient(145deg, #007AFF 0%, #0A84FF 100%);
-    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+    background: linear-gradient(145deg, #004B8E 0%, #0A84FF 100%);
+    box-shadow: 0 2px 8px rgba(0, 75, 142, 0.3);
 }
 
 /* Menu Text */
@@ -2483,7 +2483,7 @@ button:active,
 }
 
 .ios-filter-chip.active {
-    background: #007AFF;
+    background: #004B8E;
     color: #FFFFFF;
 }
 
@@ -2549,7 +2549,7 @@ button:active,
 .ios-auth-icon {
     width: 64px;
     height: 64px;
-    background: linear-gradient(145deg, #007AFF 0%, #5856D6 100%);
+    background: linear-gradient(145deg, #004B8E 0%, #003366 100%);
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -2602,8 +2602,8 @@ button:active,
 
 .ios-auth-input:focus {
     outline: none;
-    border-color: #007AFF;
-    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+    border-color: #004B8E;
+    box-shadow: 0 0 0 4px rgba(0, 75, 142, 0.15);
 }
 
 .ios-auth-input::placeholder {
@@ -2658,7 +2658,7 @@ button:active,
 
 /* Unlock Button */
 .ios-auth-btn.unlock {
-    background: #007AFF;
+    background: #004B8E;
     color: #FFFFFF;
 }
 
@@ -2819,7 +2819,7 @@ button:active,
 }
 
 .sync-status-banner.info {
-    background: rgba(0, 122, 255, 0.95);
+    background: rgba(0, 75, 142, 0.95);
 }
 
 .sync-banner-content {

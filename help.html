@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & User Guide - Multi-Hostel Attendance</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #004B8E;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #86868b;
+            margin-bottom: 32px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin: 28px 0 12px 0;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5e7;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #004B8E;
+            margin: 16px 0 8px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            color: #424245;
+        }
+
+        ul,
+        ol {
+            margin: 12px 0 12px 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #424245;
+        }
+
+        .step-box {
+            background: #e8f4fd;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .step-box h4 {
+            color: #004B8E;
+            margin-bottom: 8px;
+        }
+
+        .faq {
+            background: #f5f5f7;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+
+        .faq strong {
+            color: #004B8E;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #e5e5e7;
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f5f5f7;
+            font-weight: 600;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #004B8E;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer-nav {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e5e7;
+            text-align: center;
+        }
+
+        .footer-nav a {
+            color: #004B8E;
+            margin: 0 12px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to App</a>
+
+        <h1>📖 Help & User Guide</h1>
+        <p class="subtitle">Complete guide to using the Multi-Hostel Attendance App</p>
+
+        <h2>🚀 Quick Start</h2>
+        <div class="step-box">
+            <h4>1. First Time? Register Your Hostel</h4>
+            <ol>
+                <li>Click "Register New Hostel"</li>
+                <li>Fill hostel name, your name, email, password</li>
+                <li>Click Register → Check email for OTP</li>
+                <li>Enter OTP → Done!</li>
+            </ol>
+        </div>
+        <div class="step-box">
+            <h4>2. Already Registered? Login</h4>
+            <ol>
+                <li>Enter email or Hostel ID</li>
+                <li>Enter password</li>
+                <li>Click Login</li>
+            </ol>
+        </div>
+
+        <h2>📋 Marking Attendance</h2>
+        <ol>
+            <li>Select <strong>Date</strong> (default: today)</li>
+            <li>Select <strong>Category</strong> (Yoga/Mess Day/Mess Night/Night Shift)</li>
+            <li><strong>Tap on student</strong> to change status: Present → Absent → Leave</li>
+            <li>Click <strong>"Verify"</strong> to confirm</li>
+            <li>Click <strong>"Sync"</strong> to save to cloud</li>
+        </ol>
+        <p><strong>⚠️ Important:</strong> Once synced, data cannot be changed!</p>
+
+        <h2>🎨 Status Colors</h2>
+        <table>
+            <tr>
+                <th>Color</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td style="background:#34C759; color:white; text-align:center;">Green</td>
+                <td>Present ✓</td>
+            </tr>
+            <tr>
+                <td style="background:#FF3B30; color:white; text-align:center;">Red</td>
+                <td>Absent ✗</td>
+            </tr>
+            <tr>
+                <td style="background:#FF9500; color:white; text-align:center;">Yellow</td>
+                <td>Leave 📝</td>
+            </tr>
+        </table>
+
+        <h2>☰ Menu Options</h2>
+        <table>
+            <tr>
+                <th>Option</th>
+                <th>What It Does</th>
+            </tr>
+            <tr>
+                <td>Yoga / Mess Day / Mess Night / Night Shift</td>
+                <td>Switch attendance category</td>
+            </tr>
+            <tr>
+                <td>Add Student</td>
+                <td>Add new student to list</td>
+            </tr>
+            <tr>
+                <td>Reset Current</td>
+                <td>Set all to Present</td>
+            </tr>
+            <tr>
+                <td>Download CSV</td>
+                <td>Export as spreadsheet</td>
+            </tr>
+            <tr>
+                <td>Admin Panel</td>
+                <td>Access reports & analytics</td>
+            </tr>
+            <tr>
+                <td>Sync Tracker</td>
+                <td>View sync status</td>
+            </tr>
+            <tr>
+                <td>Logout</td>
+                <td>Sign out</td>
+            </tr>
+        </table>
+
+        <h2>👨‍💼 Admin Panel</h2>
+        <p>Access: Menu → Admin Panel → Enter Password</p>
+        <table>
+            <tr>
+                <th>Tab</th>
+                <th>Features</th>
+            </tr>
+            <tr>
+                <td>Overview</td>
+                <td>Stats, top performers, at-risk students</td>
+            </tr>
+            <tr>
+                <td>Rankings</td>
+                <td>Student leaderboard, filters</td>
+            </tr>
+            <tr>
+                <td>AI Insights</td>
+                <td>Pattern analysis, warnings</td>
+            </tr>
+            <tr>
+                <td>Reports</td>
+                <td>Download Excel/PDF reports</td>
+            </tr>
+            <tr>
+                <td>Data</td>
+                <td>Backup, Import, Archive, Purge</td>
+            </tr>
+        </table>
+
+        <h2>❓ FAQs</h2>
+
+        <div class="faq">
+            <strong>Q: Can I edit after syncing?</strong>
+            <p>No. Synced data is locked to ensure integrity.</p>
+        </div>
+
+        <div class="faq">
+            <strong>Q: Can I use on multiple devices?</strong>
+            <p>Yes! Login with same account on any device. Data syncs automatically.</p>
+        </div>
+
+        <div class="faq">
+            <strong>Q: What if two people sync at the same time?</strong>
+            <p>First sync wins. Others will see "Already submitted" message.</p>
+        </div>
+
+        <div class="faq">
+            <strong>Q: Can I use offline?</strong>
+            <p>Yes, you can mark attendance offline. It will sync when online.</p>
+        </div>
+
+        <div class="faq">
+            <strong>Q: Forgot password?</strong>
+            <p>Click "Forgot Password" → Enter email → Get OTP → Reset password.</p>
+        </div>
+
+        <h2>⚠️ Troubleshooting</h2>
+        <table>
+            <tr>
+                <th>Problem</th>
+                <th>Solution</th>
+            </tr>
+            <tr>
+                <td>Can't login</td>
+                <td>Check email/password. Try "Forgot Password".</td>
+            </tr>
+            <tr>
+                <td>Sync failed</td>
+                <td>Check internet. Try again.</td>
+            </tr>
+            <tr>
+                <td>OTP not received</td>
+                <td>Check spam folder. Wait 2 min, retry.</td>
+            </tr>
+            <tr>
+                <td>Data not loading</td>
+                <td>Refresh page. Clear browser cache.</td>
+            </tr>
+        </table>
+
+        <h2>📞 Need Help?</h2>
+        <p>WhatsApp: <a href="https://wa.me/918390229604">+91 8390229604</a></p>
+        <p>Or visit: <a href="contact.html">Contact Us Page</a></p>
+
+        <div class="footer-nav">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms & Conditions</a>
+            <a href="disclaimer.html">Disclaimer</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </div>
+</body>
+
+</html>
