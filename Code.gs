@@ -1582,9 +1582,12 @@ function calculateTrackingData(startDateStr, endDateStr, sheetUrl) {
   
   // Helper: Get best identifier for a student
   // Priority: Application Number → Application ID → First+Last Name
-  function getStudentKey(appNum, appId, name) {
+  // IMPORTANT: Uses nameToAppNum lookup so old name-based records merge with App Number
+  function getStudentKey(appNum, appId, name, nameToAppNum, nameToAppId) {
     const num = String(appNum || '').trim();
     const id = String(appId || '').trim();
+    const nameInfo = extractFirstLastName(name);
+    const nameKey = nameInfo.key;
     
     // Treat "N/A", "n/a", "NA" as empty (common placeholder values)
     const isValidNum = num && num.length > 0 && !['n/a', 'na', '-', 'null', 'undefined'].includes(num.toLowerCase());
@@ -1593,12 +1596,22 @@ function calculateTrackingData(startDateStr, endDateStr, sheetUrl) {
     // Priority 1: Application Number (most reliable)
     if (isValidNum) return 'appNum_' + num;
     
-    // Priority 2: Application ID
+    // Priority 2: Look up this student's App Number by name (MERGES old records!)
+    // This is the key fix - even if record has no App Number, we find it via name
+    if (nameToAppNum && nameToAppNum[nameKey]) {
+      return 'appNum_' + nameToAppNum[nameKey];
+    }
+    
+    // Priority 3: Application ID
     if (isValidId) return 'appId_' + id;
     
-    // Priority 3: First + Last name (handles name variations)
-    const nameInfo = extractFirstLastName(name);
-    return 'name_' + nameInfo.key;
+    // Priority 4: Look up this student's App ID by name
+    if (nameToAppId && nameToAppId[nameKey]) {
+      return 'appId_' + nameToAppId[nameKey];
+    }
+    
+    // Priority 5: First + Last name (handles name variations)
+    return 'name_' + nameKey;
   }
 
   // Track students only from attendance sheets (hostel-specific)
@@ -1607,6 +1620,60 @@ function calculateTrackingData(startDateStr, endDateStr, sheetUrl) {
   
   // Map to track latest name for each unique identifier
   const idToLatestName = {};
+  
+  // FIRST PASS: Build name → App Number/ID mappings from ALL attendance data
+  // This allows us to find current App Number for students by their name
+  const nameToAppNum = {};  // name_key → appNum
+  const nameToAppId = {};   // name_key → appId
+  const studentLatestInfo = {};  // name_key → {name, appNum, appId}
+  
+  attendanceSheets.forEach(sheetName => {
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) return;
+    
+    const data = sheet.getDataRange().getValues();
+    if (data.length <= 1) return;
+    
+    const headers = data[0].map(h => String(h).toLowerCase().trim());
+    const getIdx = (keywords) => headers.findIndex(h => keywords.some(k => h.includes(k)));
+    
+    const pName = getIdx(['full name', 'name']);
+    const pAppId = getIdx(['application: id', 'app id', 'application id']);
+    const pAppNum = getIdx(['application: application number', 'application number', 'app number']);
+    
+    if (pName === -1) return;
+    
+    for (let i = 1; i < data.length; i++) {
+      const rawName = data[i][pName];
+      if (!rawName) continue;
+      
+      const appId = pAppId !== -1 ? String(data[i][pAppId] || '').trim() : '';
+      const appNum = pAppNum !== -1 ? String(data[i][pAppNum] || '').trim() : '';
+      
+      const nameInfo = extractFirstLastName(rawName);
+      const nameKey = nameInfo.key;
+      
+      // Store name → App Number mapping (if valid)
+      if (appNum && !['n/a', 'na', '-', 'null', 'undefined'].includes(appNum.toLowerCase())) {
+        nameToAppNum[nameKey] = appNum;
+      }
+      
+      // Store name → App ID mapping (if valid)
+      if (appId && !['n/a', 'na', '-', 'null', 'undefined'].includes(appId.toLowerCase())) {
+        nameToAppId[nameKey] = appId;
+      }
+      
+      // Store latest student info
+      if (!studentLatestInfo[nameKey] || appNum) {
+        studentLatestInfo[nameKey] = {
+          name: String(rawName).trim(),
+          appNum: appNum,
+          appId: appId
+        };
+      }
+    }
+  });
+
 
   // Process each attendance sheet
   attendanceSheets.forEach(sheetName => {
@@ -1639,8 +1706,8 @@ function calculateTrackingData(startDateStr, endDateStr, sheetUrl) {
       
       if (!rawName || !rawDate) continue;
       
-      // Get unique student identifier (Application ID → Application Number → Name)
-      const studentKey = getStudentKey(appNum, appId, rawName);
+      // Get unique student identifier - uses nameToAppNum for merge
+      const studentKey = getStudentKey(appNum, appId, rawName, nameToAppNum, nameToAppId);
 
       // Parse date - handle Date objects and strings
       let dateStr = '';
